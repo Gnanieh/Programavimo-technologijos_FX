@@ -8,6 +8,7 @@ module org.example {
     requires java.sql;
     requires java.naming;
     requires org.hibernate.orm.core;
+    requires mysql.connector.j;
 
     opens org.example to javafx.fxml;
     exports org.example;

@@ -1,6 +1,8 @@
 package org.example.Model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +24,7 @@ public class Client extends User
     private String email;
     private String address;
     private LocalDate birthDate;
-    @Transient
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Comment> reviews;
     @Transient
     private List<Publication> ownPublication;
@@ -38,6 +40,11 @@ public class Client extends User
 
     public Client(int id, String login, String password, String name, String surname) {
         super(id, login, password, name, surname);
+    }
+
+    public Client(String login, String password, String name, String surname, String address, LocalDate birthDate) {
+        super(login, password, name, surname);
+        this.address = address;
     }
 
     @Override

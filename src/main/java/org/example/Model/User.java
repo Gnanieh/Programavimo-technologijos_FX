@@ -34,4 +34,11 @@ public abstract class User
         this.name = name;
         this.surname = surname;
     }
+
+    public User(String login, String password, String name, String surname) {
+        this.login = login;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+    }
 }
