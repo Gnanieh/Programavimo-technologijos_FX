@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +21,9 @@ public class Journal  extends Publication
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    protected int id;
 
+    public Journal(String title, String author, String publisher, LocalDate year, String type, Client client) {
+        super(title, author, publisher, year, type, client);
+    }
 }

@@ -17,7 +17,7 @@ public class Chat extends Comment
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    protected int id;
     private Book book;
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Comment> messages;

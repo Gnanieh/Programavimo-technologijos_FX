@@ -1,16 +1,14 @@
 package org.example.Model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -23,14 +21,35 @@ public class Publication implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
+
     private String title;
     private String author;
     private String publisher;
-    private String year;
+    private LocalDate year;
+    private String type;
+    @ManyToOne
+    private Client client;
 
     public Publication(int id, String title, String author) {
         this.id = id;
         this.title = title;
         this.author = author;
+    }
+
+    public Publication(String title, String author, String publisher, LocalDate year, String type) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.year = year;
+        this.type = type;
+    }
+
+    public Publication(String title, String author, String publisher, LocalDate year, String type, Client client) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.year = year;
+        this.type = type;
+        this.client = client;
     }
 }

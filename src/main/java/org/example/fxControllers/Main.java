@@ -90,6 +90,7 @@ public class Main implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillUserList();
+        disableFields();
     }
 
     public void loadUserData()
@@ -116,15 +117,16 @@ public class Main implements Initializable {
         User selectedUser = userListField.getSelectionModel().getSelectedItem();
         User userInfoFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
 
+        userInfoFromDB.setName(nameField.getText());
+        userInfoFromDB.setSurname(surnameField.getText());
+
         if (userInfoFromDB instanceof Client)
         {
-            Client client = (Client) userInfoFromDB;
-            addressField.setText(client.getAddress());
-            emailField.setText(client.getEmail());
-            bDay.setValue(client.getBirthDate());
+            addressField.setText(((Client) userInfoFromDB).getAddress());
+            emailField.setText(((Client) userInfoFromDB).getEmail());
+            bDay.setValue(((Client) userInfoFromDB).getBirthDate());
         } else {
-            Admin admin = (Admin) userInfoFromDB;
-            phoneNumField.setText(admin.getPhoneNumber());
+            phoneNumField.setText(((Admin) userInfoFromDB).getPhoneNumber());
         }
 
         hibernate.update(userInfoFromDB);
@@ -145,7 +147,6 @@ public class Main implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
-
     }
 
 }

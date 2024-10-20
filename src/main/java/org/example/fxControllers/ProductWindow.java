@@ -2,12 +2,155 @@ package org.example.fxControllers;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import org.example.Model.*;
 import org.example.hibernateControllers.GenericHibernate;
 
-public class ProductWindow {
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
+public class ProductWindow implements Initializable {
+
+
+    @FXML
+    public ListView publicationListField;
+    @FXML
+    public ListView userListField;
+    @FXML
+    public TextField titleField;
+    @FXML
+    public TextField authorField;
+    @FXML
+    public TextField publicherField;
+    @FXML
+    public DatePicker yearDatePick;
+    @FXML
+    public RadioButton mangaCheck;
+    @FXML
+    public RadioButton journalCheck;
+    @FXML
+    public RadioButton bookCheck;
+    @FXML
+    public TextField illustratorField;
+    @FXML
+    public TextField originalLanguageField;
+    @FXML
+    public TextField volumeNumberField;
+    @FXML
+    public ToggleButton isColloredButton;
+    @FXML
+    public TextField isbnField;
+    @FXML
+    public TextField pageCountField;
+    @FXML
+    public TextField summaryField;
+
 
     EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bookExchange");
     GenericHibernate hibernate = new GenericHibernate(entityManagerFactory);
 
+    public void fillUserList() {
+        userListField.getItems().clear();
+        List<User> userList = hibernate.getAllRecords(User.class);
+        userListField.getItems().addAll(userList);
+    }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        fillUserList();
+        disableFields();
+    }
+
+    public void createNewPublication() {
+        Client selectedClient = (Client) userListField.getSelectionModel().getSelectedItem();
+        Client clientFromDB = hibernate.getEntityById(Client.class, selectedClient.getId());
+
+        if (mangaCheck.isSelected()) {
+            Manga manga = new Manga(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Manga", clientFromDB, illustratorField.getText(), originalLanguageField.getText(), Integer.parseInt(volumeNumberField.getText()), isColloredButton.isSelected());
+            hibernate.create(manga);
+        }
+        else if (journalCheck.isSelected()) {
+            Journal journal = new Journal(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Journal", clientFromDB);
+            hibernate.create(journal);
+        }
+        else if (bookCheck.isSelected()) {
+            Book book = new Book(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Book", clientFromDB, isbnField.getText(), Integer.parseInt(pageCountField.getText()), summaryField.getText());
+            hibernate.create(book);
+        }
+        fillPublicationList();
+    }
+
+    public void fillPublicationList() {
+        User selectedUser = (User) userListField.getSelectionModel().getSelectedItem();
+        User userFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
+
+        publicationListField.getItems().clear();
+        List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
+        publicationListField.getItems().addAll(publicationList);
+    }
+
+    public void loadPublication()
+    {
+        Publication selectedPublication = (Publication) publicationListField.getSelectionModel().getSelectedItem();
+        Publication publicationFromDB = hibernate.getEntityById(Publication.class, selectedPublication.getId());
+        titleField.setText(publicationFromDB.getTitle());
+        authorField.setText(publicationFromDB.getAuthor());
+        publicherField.setText(publicationFromDB.getPublisher());
+        yearDatePick.setValue(publicationFromDB.getYear());
+
+        if (publicationFromDB instanceof Manga) {
+            Manga manga = (Manga) publicationFromDB;
+            illustratorField.setText(manga.getIllustrator());
+            originalLanguageField.setText(manga.getOriginalLanguage());
+            volumeNumberField.setText(String.valueOf(manga.getVolumeNumber()));
+            if(manga.isColor() == true)
+            {
+                isColloredButton.setSelected(true);
+            }
+            else
+            {
+                isColloredButton.setSelected(false);
+            }
+        }
+        else if (publicationFromDB instanceof Book) {
+            Book book = (Book) publicationFromDB;
+            isbnField.setText(book.getIsbn());
+            pageCountField.setText(String.valueOf(book.getPageCount()));
+            summaryField.setText(book.getSummary());
+        }
+    }
+
+    public void disableFields()
+    {
+        if (mangaCheck.isSelected())
+        {
+        illustratorField.setDisable(false);
+        originalLanguageField.setDisable(false);
+        volumeNumberField.setDisable(false);
+        isColloredButton.setDisable(false);
+        isbnField.setDisable(true);
+        pageCountField.setDisable(true);
+        summaryField.setDisable(true);
+        } else if (journalCheck.isSelected()) {
+            isbnField.setDisable(true);
+            pageCountField.setDisable(true);
+            summaryField.setDisable(true);
+            volumeNumberField.setDisable(true);
+            isColloredButton.setDisable(true);
+            illustratorField.setDisable(true);
+            originalLanguageField.setDisable(true);
+        }
+        else{
+            isbnField.setDisable(false);
+            pageCountField.setDisable(false);
+            summaryField.setDisable(false);
+
+            volumeNumberField.setDisable(true);
+            isColloredButton.setDisable(true);
+            illustratorField.setDisable(true);
+        }
+    }
 }
