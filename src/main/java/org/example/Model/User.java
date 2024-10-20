@@ -6,14 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
-public abstract class User
+public abstract class User implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,11 @@
 package org.example.Model;
 
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Date;
+@Getter
+@Setter
 public class PublicationRecord
 {
     private int id;

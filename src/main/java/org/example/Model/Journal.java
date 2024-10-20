@@ -1,16 +1,24 @@
 package org.example.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+
 public class Journal  extends Publication
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    public Journal(int id, int id1, String title, String author, String publisher, String year, int id2) {
-        super(id, id1, title, author, publisher, year);
-        this.id = id2;
-    }
-
-    public Journal(int id, String title, String author, String publisher, String year, int id1) {
-        super(id, title, author, publisher, year);
-        this.id = id1;
-    }
 }

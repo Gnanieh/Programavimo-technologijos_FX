@@ -43,7 +43,7 @@ public class MenuOperations
                         System.out.println("Enter data: login;psw;name;surname;phoneNumber");
                         consoleInput = sc.nextLine();
                         String[] info = consoleInput.split(";");
-                        Admin admin = new Admin(01,info[0],info[1],info[2],info[3], Integer.parseInt(info[4]));
+                        Admin admin = new Admin(01,info[0],info[1],info[2],info[3], info[4]);
                         System.out.println(admin.toString());
                         bookExchange.getUsers().add(admin);
                     }

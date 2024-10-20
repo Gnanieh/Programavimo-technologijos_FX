@@ -9,17 +9,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
-public class Client extends User
+public class Client extends User implements Comparable<Client>
 {
     private String email;
     private String address;
@@ -42,13 +41,23 @@ public class Client extends User
         super(id, login, password, name, surname);
     }
 
-    public Client(String login, String password, String name, String surname, String address, LocalDate birthDate) {
+    public Client(String login, String password, String name, String surname, String address, LocalDate birthDate, String email) {
         super(login, password, name, surname);
         this.address = address;
+        this.birthDate = birthDate;
+        this.email = email;
     }
 
     @Override
     public String toString() {
         return name + " " + surname + " " + email + " " + address + " " + birthDate;
     }
+
+    @Override
+    public int compareTo(Client o) {
+
+        return 0;
+    }
+
 }
+

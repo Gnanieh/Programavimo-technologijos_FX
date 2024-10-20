@@ -4,12 +4,13 @@ package org.example.Model;
 import lombok.Setter;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class BookExchange {
+public class BookExchange implements Serializable {
     private List<Publication> allPublications;
     private List<User> users;
 
