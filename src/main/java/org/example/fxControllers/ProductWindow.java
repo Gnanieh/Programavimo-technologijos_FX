@@ -88,7 +88,12 @@ public class ProductWindow implements Initializable {
         User userFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
 
         publicationListField.getItems().clear();
+        List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
         publicationListField.getItems().addAll(hibernate.getAllRecords(Publication.class));
+
+
+
+        //publicationListField.getItems().addAll(hibernate.getEntityById(Publication.class, userFromDB.getId()));
     }
 
     public void loadPublication()
@@ -163,10 +168,34 @@ public class ProductWindow implements Initializable {
             isbnField.setDisable(false);
             pageCountField.setDisable(false);
             summaryField.setDisable(false);
-
+            originalLanguageField.setDisable(true);
             volumeNumberField.setDisable(true);
             isColloredButton.setDisable(true);
             illustratorField.setDisable(true);
         }
+    }
+
+    public void updatePublication() {
+        Publication selectedPublication = publicationListField.getSelectionModel().getSelectedItem();
+        Publication publicationFromDB = hibernate.getEntityById(Publication.class, selectedPublication.getId());
+
+        publicationFromDB.setTitle(titleField.getText());
+        publicationFromDB.setAuthor(authorField.getText());
+        publicationFromDB.setPublisher(publicherField.getText());
+        publicationFromDB.setYear(yearDatePick.getValue());
+
+        if (publicationFromDB instanceof Manga) {
+            ((Manga) publicationFromDB).setIllustrator(illustratorField.getText());
+            ((Manga) publicationFromDB).setOriginalLanguage(originalLanguageField.getText());
+            ((Manga) publicationFromDB).setVolumeNumber(Integer.parseInt(volumeNumberField.getText()));
+            ((Manga) publicationFromDB).setColor(isColloredButton.isSelected());
+        }
+        else if (publicationFromDB instanceof Book) {
+            ((Book) publicationFromDB).setIsbn(isbnField.getText());
+            ((Book) publicationFromDB).setPageCount(Integer.parseInt(pageCountField.getText()));
+            ((Book) publicationFromDB).setSummary(summaryField.getText());
+        }
+        hibernate.update(publicationFromDB);
+        fillPublicationList();
     }
 }

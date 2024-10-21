@@ -31,7 +31,7 @@ public class GenericHibernate {
             entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            FxUtils.generateAlert(Alert.AlertType.ERROR, "Hibernate Error", "Error during CREATE operation");
         } finally {
             if (entityManager != null) entityManager.close();
         }
@@ -93,7 +93,7 @@ public class GenericHibernate {
             entityManager.remove(object);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            FxUtils.generateAlert(Alert.AlertType.ERROR, "Hibernate Error", "Error during DELETE operation");
         } finally {
             if (entityManager != null) entityManager.close();
         }

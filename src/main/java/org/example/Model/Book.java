@@ -40,4 +40,9 @@ public class Book extends Publication
         this.pageCount = pageCount;
         this.summary = summary;
     }
+
+    @Override
+    public String toString() {
+        return "Book" + " " + isbn +  " " + pageCount + " " + summary;
+    }
 }

@@ -27,4 +27,9 @@ public class Journal  extends Publication
     public Journal(String title, String author, String publisher, LocalDate year, String type) {
         super(title, author, publisher, year, type);
     }
+
+    @Override
+    public String toString() {
+        return "Journal";
+    }
 }

@@ -51,4 +51,6 @@ public abstract class Publication implements Serializable
         this.type = type;
         this.client = client;
     }
+
+
 }

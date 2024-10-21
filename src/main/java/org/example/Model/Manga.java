@@ -47,4 +47,10 @@ public class Manga  extends Publication
         this.volumeNumber = volumeNumber;
         this.isColor = isColor;
     }
+
+    @Override
+    public String toString() {
+        return "Manga" +
+                illustrator + " " + originalLanguage + " " + volumeNumber + " " + isColor;
+    }
 }
