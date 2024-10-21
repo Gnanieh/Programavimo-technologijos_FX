@@ -18,15 +18,12 @@ import java.time.LocalDate;
 @Entity
 public class Manga  extends Publication
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
     private String illustrator;
     private String originalLanguage;
     private int volumeNumber;
     private boolean isColor;
 
-    public Manga(String title, String author, String publisher, LocalDate year, String type,Client client, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
+    public Manga(String title, String author, String publisher, LocalDate year, String type, User client, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
         super(title, author, publisher, year, type, client);
         this.illustrator = illustrator;
         this.originalLanguage = originalLanguage;
@@ -34,7 +31,20 @@ public class Manga  extends Publication
         this.isColor = isColor;
     }
 
-    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client) {
+    public Manga(String title, String author, String publisher, LocalDate year, String type, User client) {
         super(title, author, publisher, year, type, client);
+    }
+
+
+    public Manga(String title, String author, String publisher, LocalDate year, String type) {
+        super(title, author, publisher, year, type);
+    }
+
+    public Manga(String title, String author, String publisher, LocalDate year, String type, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
+        super(title, author, publisher, year, type);
+        this.illustrator = illustrator;
+        this.originalLanguage = originalLanguage;
+        this.volumeNumber = volumeNumber;
+        this.isColor = isColor;
     }
 }

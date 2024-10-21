@@ -14,16 +14,17 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 
 public class Journal  extends Publication
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
 
-    public Journal(String title, String author, String publisher, LocalDate year, String type, Client client) {
+    public Journal(String title, String author, String publisher, LocalDate year, String type, User client) {
         super(title, author, publisher, year, type, client);
+    }
+
+
+    public Journal(String title, String author, String publisher, LocalDate year, String type) {
+        super(title, author, publisher, year, type);
     }
 }

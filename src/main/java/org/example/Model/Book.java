@@ -14,13 +14,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Book extends Publication
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
     private String isbn;
     private int pageCount;
     private String summary;
@@ -32,8 +28,14 @@ public class Book extends Publication
         this.summary = summary;
     }
 
-    public Book(String title, String author, String publisher, LocalDate year, String type, Client client, String isbn, int pageCount, String summary) {
+    public Book(String title, String author, String publisher, LocalDate year, String type, User client, String isbn, int pageCount, String summary) {
         super(title, author, publisher, year, type, client);
+        this.isbn = isbn;
+        this.pageCount = pageCount;
+        this.summary = summary;
+    }
+
+    public Book(String isbn, int pageCount, String summary) {
         this.isbn = isbn;
         this.pageCount = pageCount;
         this.summary = summary;

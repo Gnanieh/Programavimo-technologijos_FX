@@ -16,9 +16,9 @@ public class ProductWindow implements Initializable {
 
 
     @FXML
-    public ListView publicationListField;
+    public ListView<Publication> publicationListField;
     @FXML
-    public ListView userListField;
+    public ListView<User> userListField;
     @FXML
     public TextField titleField;
     @FXML
@@ -65,8 +65,8 @@ public class ProductWindow implements Initializable {
     }
 
     public void createNewPublication() {
-        Client selectedClient = (Client) userListField.getSelectionModel().getSelectedItem();
-        Client clientFromDB = hibernate.getEntityById(Client.class, selectedClient.getId());
+        User selectedClient = userListField.getSelectionModel().getSelectedItem();
+        User clientFromDB = hibernate.getEntityById(User.class, selectedClient.getId());
 
         if (mangaCheck.isSelected()) {
             Manga manga = new Manga(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Manga", clientFromDB, illustratorField.getText(), originalLanguageField.getText(), Integer.parseInt(volumeNumberField.getText()), isColloredButton.isSelected());
@@ -84,18 +84,18 @@ public class ProductWindow implements Initializable {
     }
 
     public void fillPublicationList() {
-        User selectedUser = (User) userListField.getSelectionModel().getSelectedItem();
+        User selectedUser = userListField.getSelectionModel().getSelectedItem();
         User userFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
 
         publicationListField.getItems().clear();
-        List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
-        publicationListField.getItems().addAll(publicationList);
+        publicationListField.getItems().addAll(hibernate.getAllRecords(Publication.class));
     }
 
     public void loadPublication()
     {
-        Publication selectedPublication = (Publication) publicationListField.getSelectionModel().getSelectedItem();
+        Publication selectedPublication = publicationListField.getSelectionModel().getSelectedItem();
         Publication publicationFromDB = hibernate.getEntityById(Publication.class, selectedPublication.getId());
+
         titleField.setText(publicationFromDB.getTitle());
         authorField.setText(publicationFromDB.getAuthor());
         publicherField.setText(publicationFromDB.getPublisher());
@@ -114,13 +114,29 @@ public class ProductWindow implements Initializable {
             {
                 isColloredButton.setSelected(false);
             }
+            mangaCheck.setSelected(true);
+            journalCheck.setSelected(false);
+            bookCheck.setSelected(false);
         }
         else if (publicationFromDB instanceof Book) {
             Book book = (Book) publicationFromDB;
             isbnField.setText(book.getIsbn());
             pageCountField.setText(String.valueOf(book.getPageCount()));
             summaryField.setText(book.getSummary());
+            journalCheck.setSelected(false);
+            mangaCheck.setSelected(false);
         }
+        else {
+            mangaCheck.setSelected(false);
+            bookCheck.setSelected(false);
+            journalCheck.setSelected(true);
+        }
+    }
+
+    public void deletePublication() {
+        Publication selectedPublication = publicationListField.getSelectionModel().getSelectedItem();
+        hibernate.delete(Publication.class, selectedPublication.getId());
+        fillPublicationList();
     }
 
     public void disableFields()

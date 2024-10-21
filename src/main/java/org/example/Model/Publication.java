@@ -15,12 +15,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
-public class Publication implements Serializable
+public abstract class Publication implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
+    private int id;
 
     private String title;
     private String author;
@@ -28,7 +27,7 @@ public class Publication implements Serializable
     private LocalDate year;
     private String type;
     @ManyToOne
-    private Client client;
+    private User client;
 
     public Publication(int id, String title, String author) {
         this.id = id;
@@ -44,7 +43,7 @@ public class Publication implements Serializable
         this.type = type;
     }
 
-    public Publication(String title, String author, String publisher, LocalDate year, String type, Client client) {
+    public Publication(String title, String author, String publisher, LocalDate year, String type, User client) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
