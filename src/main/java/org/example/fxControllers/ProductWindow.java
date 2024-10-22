@@ -6,9 +6,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.example.Model.*;
+import org.example.hibernateControllers.CustomHibernate;
 import org.example.hibernateControllers.GenericHibernate;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -86,14 +88,20 @@ public class ProductWindow implements Initializable {
     public void fillPublicationList() {
         User selectedUser = userListField.getSelectionModel().getSelectedItem();
         User userFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
+        CustomHibernate cusHib = new CustomHibernate(entityManagerFactory);
 
         publicationListField.getItems().clear();
         List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
-        publicationListField.getItems().addAll(hibernate.getAllRecords(Publication.class));
+        //List <Publication> publicationList = new ArrayList<>();
+        //publicationList.add(cusHib.getPublicationByUserId(userFromDB.getId()));
+        publicationListField.getItems().addAll(publicationList);
 
 
-
-        //publicationListField.getItems().addAll(hibernate.getEntityById(Publication.class, userFromDB.getId()));
+//        List<Publication> publicationList = new ArrayList<>();
+//        for (Publication publication : publicationList)
+//                publicationList.add(hibernate.getEntityById(Publication.class, userFromDB.getId()));
+//
+//        publicationListField.getItems().addAll(hibernate.getEntityById(Publication.class, userFromDB.getId()));
     }
 
     public void loadPublication()

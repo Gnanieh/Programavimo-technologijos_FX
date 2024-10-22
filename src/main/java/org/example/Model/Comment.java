@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,38 +24,32 @@ public class Comment
     private String body;
     @ManyToOne
     private User user;
-    private LocalDateTime timestamp;
-    @Transient
+    private LocalDate timestamp;
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
     private List<Comment> replies;
-    @Transient
+    @ManyToOne
     private Comment parentComment;
-    @Transient
-    private Chat chat;
+    @ManyToOne
+    private Publication publication;
 
-    public Comment(int id, String title, String body, User user) {
-        this.id = id;
-        this.title = title;
-        this.body = body;
-        this.user = user;
-    }
-
-    public Comment(int id, String title, String body, List<Comment> replies, User user) {
-        this.id = id;
-        this.title = title;
-        this.body = body;
-        this.replies = replies;
-        this.user = user;
-    }
 
     public Comment(String title, String body, User user) {
         this.title = title;
         this.body = body;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDate.now();
         this.user = user;
+    }
+
+    public Comment(String title, String body, User user, Publication publication) {
+        this.title = title;
+        this.body = body;
+        this.user = user;
+        this.timestamp = LocalDate.now();
+        this.publication = publication;
     }
 
     @Override
     public String toString() {
-        return title + " " + timestamp;
+        return title + " " + body + " " + timestamp;
     }
 }

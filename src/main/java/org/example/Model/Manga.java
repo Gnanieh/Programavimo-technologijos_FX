@@ -50,7 +50,7 @@ public class Manga  extends Publication
 
     @Override
     public String toString() {
-        return "Manga" +
+        return "Manga " + getTitle() + " " + getAuthor() + " " + getPublisher() + " " +
                 illustrator + " " + originalLanguage + " " + volumeNumber + " " + isColor;
     }
 }

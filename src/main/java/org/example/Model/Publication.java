@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,6 +29,8 @@ public abstract class Publication implements Serializable
     private String type;
     @ManyToOne
     private User client;
+    @OneToMany
+    private List<Comment> comments;
 
     public Publication(int id, String title, String author) {
         this.id = id;

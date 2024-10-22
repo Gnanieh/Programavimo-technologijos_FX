@@ -59,11 +59,15 @@ public class Main implements Initializable {
     public void createNewUser() {
         if (clientCheck.isSelected()) {
             Client client = new Client(loginField.getText(), pswField.getText(), nameField.getText(), surnameField.getText(), addressField.getText(), bDay.getValue(), emailField.getText());
-            hibernate.create(client);
+            if(client != null) {
+                hibernate.create(client);
+            }
         }
         else{
             Admin admin = new Admin(loginField.getText(), pswField.getText(), nameField.getText(), surnameField.getText(), phoneNumField.getText());
-            hibernate.create(admin);
+            if (admin != null) {
+                hibernate.create(admin);
+                }
         }
         fillUserList();
     }
@@ -149,6 +153,17 @@ public class Main implements Initializable {
         fillUserList();
     }
 
+    public void clearFields()
+    {
+        loginField.clear();
+        nameField.clear();
+        surnameField.clear();
+        addressField.clear();
+        phoneNumField.clear();
+        emailField.clear();
+        pswField.clear();
+    }
+
     public void loadProductForm() throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("productWindow.fxml"));
@@ -179,7 +194,7 @@ public class Main implements Initializable {
         User selectedUser = userComboBox.getSelectionModel().getSelectedItem();
         if (selectedPublication != null && selectedUser != null) {
             Comment comment = new Comment(
-            commentTitleField.getText(), commentTextArea.getText(), selectedUser
+            commentTitleField.getText(), commentTextArea.getText(), selectedUser, selectedPublication
             );
             hibernate.create(comment);
             commentTitleField.clear();

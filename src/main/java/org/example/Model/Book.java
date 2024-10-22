@@ -1,15 +1,13 @@
 package org.example.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +18,7 @@ public class Book extends Publication
     private String isbn;
     private int pageCount;
     private String summary;
+
 
     public Book(String title, String author, String publisher, LocalDate year, String type, String isbn, int pageCount, String summary) {
         super(title, author, publisher, year, type);
@@ -43,6 +42,7 @@ public class Book extends Publication
 
     @Override
     public String toString() {
-        return "Book" + " " + isbn +  " " + pageCount + " " + summary;
+        return "Book" + getTitle() + " " + getAuthor() + " " + getPublisher() + " " +
+                " " + isbn +  " " + pageCount + " " + summary;
     }
 }

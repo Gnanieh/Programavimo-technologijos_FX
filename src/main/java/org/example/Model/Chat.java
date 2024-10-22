@@ -6,31 +6,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Chat extends Comment
+public class Chat
 {
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @Transient
     private List<Comment> messages;
 
+    private String body;
     private LocalDateTime dateTime;
 
-//    public Chat(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client, Book book, List<Comment> messages, LocalDateTime dateTime) {
-//        super(title, body, replies, parentComment);
-//        this.book = book;
-//        this.messages = messages;
-//        this.dateTime = dateTime;
-//    }
+    public Chat(String body, LocalDateTime dateTime) {
+        this.body = body;
+        this.dateTime = dateTime;
+    }
 
-    public Chat(String title, String body, User user) {
-        super(title, body, user);
+    @Override
+    public String toString() {
+        return body + " " + dateTime;
     }
 }

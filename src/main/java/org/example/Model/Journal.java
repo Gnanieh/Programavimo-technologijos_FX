@@ -30,6 +30,6 @@ public class Journal  extends Publication
 
     @Override
     public String toString() {
-        return "Journal";
+        return "Journal" + getTitle() + " " + getAuthor() + " " + getPublisher();
     }
 }
