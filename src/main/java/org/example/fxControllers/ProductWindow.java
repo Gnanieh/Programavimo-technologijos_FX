@@ -164,7 +164,8 @@ public class ProductWindow implements Initializable {
             illustratorField.setDisable(true);
             originalLanguageField.setDisable(true);
         }
-        else{
+        else if (bookCheck.isSelected())
+        {
             isbnField.setDisable(false);
             pageCountField.setDisable(false);
             summaryField.setDisable(false);
@@ -172,7 +173,10 @@ public class ProductWindow implements Initializable {
             volumeNumberField.setDisable(true);
             isColloredButton.setDisable(true);
             illustratorField.setDisable(true);
-        }
+       }
+//        else{
+//
+//        }
     }
 
     public void updatePublication() {
@@ -197,5 +201,25 @@ public class ProductWindow implements Initializable {
         }
         hibernate.update(publicationFromDB);
         fillPublicationList();
+    }
+
+    public void clearFields()
+    {
+        titleField.clear();
+        authorField.clear();
+        publicherField.clear();
+        yearDatePick.setValue(null);
+        illustratorField.clear();
+        volumeNumberField.clear();
+        originalLanguageField.clear();
+        isColloredButton.setSelected(false);
+        isbnField.clear();
+        pageCountField.clear();
+        summaryField.clear();
+        journalCheck.setSelected(false);
+        bookCheck.setSelected(false);
+        mangaCheck.setSelected(false);
+
+
     }
 }

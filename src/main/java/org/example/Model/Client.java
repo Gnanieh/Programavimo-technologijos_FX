@@ -23,7 +23,7 @@ public class Client extends User implements Comparable<Client>
     private String email;
     private String address;
     private LocalDate birthDate;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> reviews;
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Publication> ownPublication;

@@ -15,29 +15,22 @@ import java.util.List;
 @Entity
 public class Chat extends Comment
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
+    @ManyToOne
+    @JoinColumn(name = "book_id")
     private Book book;
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    @Transient
     private List<Comment> messages;
 
     private LocalDateTime dateTime;
 
-    public Chat(int id, String title, String body, User user, int id1, LocalDateTime dateTime) {
-        super(id, title, body, user);
-        this.id = id1;
-        this.dateTime = dateTime;
-    }
+//    public Chat(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client, Book book, List<Comment> messages, LocalDateTime dateTime) {
+//        super(title, body, replies, parentComment);
+//        this.book = book;
+//        this.messages = messages;
+//        this.dateTime = dateTime;
+//    }
 
-    public Chat(int id, String title, String body, List<Comment> replies, User user, int id1, LocalDateTime dateTime) {
-        super(id, title, body, replies, user);
-        this.id = id1;
-        this.dateTime = dateTime;
-    }
-
-    public Chat(Book book, List<Comment> messages) {
-        this.book = book;
-        this.messages = messages;
+    public Chat(String title, String body, User user) {
+        super(title, body, user);
     }
 }

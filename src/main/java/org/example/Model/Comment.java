@@ -21,16 +21,14 @@ public class Comment
     private int id;
     private String title;
     private String body;
-    @Transient
+    @ManyToOne
     private User user;
     private LocalDateTime timestamp;
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
+    @Transient
     private List<Comment> replies;
-    @ManyToOne
+    @Transient
     private Comment parentComment;
-    @ManyToOne
-    private Client client;
-    @ManyToOne
+    @Transient
     private Chat chat;
 
     public Comment(int id, String title, String body, User user) {
@@ -48,12 +46,15 @@ public class Comment
         this.user = user;
     }
 
-    public Comment(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client) {
+    public Comment(String title, String body, User user) {
         this.title = title;
         this.body = body;
-        this.timestamp = timestamp;
-        this.replies = replies;
-        this.parentComment = parentComment;
-        this.client = client;
+        this.timestamp = LocalDateTime.now();
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return title + " " + timestamp;
     }
 }

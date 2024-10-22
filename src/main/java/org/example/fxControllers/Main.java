@@ -9,9 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.example.Model.Admin;
-import org.example.Model.Client;
-import org.example.Model.User;
+import org.example.Model.*;
 import org.example.StartGUI;
 import org.example.hibernateControllers.GenericHibernate;
 
@@ -43,6 +41,16 @@ public class Main implements Initializable {
     public RadioButton adminCheck;
     @FXML
     public RadioButton clientCheck;
+    @FXML
+    public ComboBox<User> userComboBox;
+    @FXML
+    public TextArea commentTextArea;
+    @FXML
+    public ListView<Comment> commentField;
+    @FXML
+    public ComboBox<Publication> productComboBox;
+    @FXML
+    public TextField commentTitleField;
 
 
     EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bookExchange");
@@ -91,6 +99,8 @@ public class Main implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillUserList();
         disableFields();
+        fillComboBoxData();
+        fillCommentData();
     }
 
     public void loadUserData()
@@ -148,5 +158,63 @@ public class Main implements Initializable {
         stage.setScene(scene);
         stage.showAndWait();
     }
+
+
+    public void fillCommentData() {
+        commentField.getItems().clear();
+        commentField.getItems().addAll(hibernate.getAllRecords(Comment.class));
+    }
+
+    public void fillComboBoxData()
+    {
+        userComboBox.getItems().clear();
+        userComboBox.getItems().addAll(hibernate.getAllRecords(User.class));
+        productComboBox.getItems().clear();
+        productComboBox.getItems().addAll(hibernate.getAllRecords(Publication.class));
+    }
+
+
+    public void createComment() {
+        Publication selectedPublication = productComboBox.getSelectionModel().getSelectedItem();
+        User selectedUser = userComboBox.getSelectionModel().getSelectedItem();
+        if (selectedPublication != null && selectedUser != null) {
+            Comment comment = new Comment(
+            commentTitleField.getText(), commentTextArea.getText(), selectedUser
+            );
+            hibernate.create(comment);
+            commentTitleField.clear();
+            commentTextArea.clear();
+            fillCommentData();
+        }
+    }
+
+    public void loadCommentData()
+    {
+        Comment selectedComment = commentField.getSelectionModel().getSelectedItem();
+        Comment commentInfoFromDB = hibernate.getEntityById(Comment.class, selectedComment.getId());
+
+        commentTitleField.setText(commentInfoFromDB.getTitle());
+        commentTextArea.setText(commentInfoFromDB.getBody());
+    }
+
+    public void updateComment() {
+        Comment selectedComment = commentField.getSelectionModel().getSelectedItem();
+        Comment commentInfoFromDB = hibernate.getEntityById(Comment.class, selectedComment.getId());
+
+        commentInfoFromDB.setTitle(commentTitleField.getText());
+        commentInfoFromDB.setBody(commentTextArea.getText());
+
+
+        hibernate.update(commentInfoFromDB);
+        fillCommentData();
+    }
+
+
+    public void deleteComment() {
+        Comment selectedComment = commentField.getSelectionModel().getSelectedItem();
+        hibernate.delete(Comment.class, selectedComment.getId());
+        fillCommentData();
+    }
+
 
 }
