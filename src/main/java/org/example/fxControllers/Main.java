@@ -2,6 +2,7 @@ package org.example.fxControllers;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.Model.*;
 import org.example.StartGUI;
+import org.example.hibernateControllers.CustomHibernate;
 import org.example.hibernateControllers.GenericHibernate;
 
 import java.io.IOException;
@@ -55,6 +57,7 @@ public class Main implements Initializable {
 
     EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bookExchange");
     GenericHibernate hibernate = new GenericHibernate(entityManagerFactory);
+    CustomHibernate cusHib = new CustomHibernate(entityManagerFactory);
 
     public void createNewUser() {
         if (clientCheck.isSelected()) {
@@ -185,7 +188,6 @@ public class Main implements Initializable {
         userComboBox.getItems().clear();
         userComboBox.getItems().addAll(hibernate.getAllRecords(User.class));
         productComboBox.getItems().clear();
-        productComboBox.getItems().addAll(hibernate.getAllRecords(Publication.class));
     }
 
 
@@ -232,4 +234,9 @@ public class Main implements Initializable {
     }
 
 
+    public void fillProductComboBoxOnSelection() {
+        User selectedClient = userComboBox.getSelectionModel().getSelectedItem();
+        productComboBox.getItems().addAll(cusHib.getPublicationByUserId(selectedClient.getId()));
+        System.out.println("ON");
+    }
 }

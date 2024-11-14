@@ -54,7 +54,7 @@
                         <Button layoutX="155.0" layoutY="279.0" mnemonicParsing="false" onAction="#deleteComment" text="Delete" />
                         <Button layoutX="85.0" layoutY="279.0" mnemonicParsing="false" onAction="#updateComment" text="Update" />
                         <ListView fx:id="commentField" layoutX="314.0" layoutY="6.0" onMouseClicked="#loadCommentData" prefHeight="358.0" prefWidth="254.0" />
-                        <ComboBox fx:id="productComboBox" layoutX="14.0" layoutY="226.0" prefHeight="26.0" prefWidth="210.0" />
+                        <ComboBox fx:id="productComboBox" layoutX="14.0" layoutY="226.0" onMouseClicked="#fillProductComboBoxOnSelection" prefHeight="26.0" prefWidth="210.0" />
                         <TextField fx:id="commentTitleField" layoutX="19.0" layoutY="64.0" prefHeight="26.0" prefWidth="202.0" />
                      </children>
                   </AnchorPane>
