@@ -1,9 +1,6 @@
 package org.example.Model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,12 +20,14 @@ public class Client extends User implements Comparable<Client>
     private String email;
     private String address;
     private LocalDate birthDate;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Comment> reviews;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<Publication> ownPublication;
-    @Transient
-    private List<Publication> borrowPublication;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comment> commentList;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Publication> ownedPublications;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Publication> borrowedPublications;
+    @OneToMany(mappedBy = "commentOwner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comment> myComments;
 
     public Client(int id, String login, String password, String name, String surname, LocalDate dateCreated, String email, String address, LocalDate birthDate) {
         super(id, login, password, name, surname, dateCreated);

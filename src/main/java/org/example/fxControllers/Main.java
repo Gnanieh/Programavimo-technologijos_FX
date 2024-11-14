@@ -191,10 +191,10 @@ public class Main implements Initializable {
 
     public void createComment() {
         Publication selectedPublication = productComboBox.getSelectionModel().getSelectedItem();
-        User selectedUser = userComboBox.getSelectionModel().getSelectedItem();
-        if (selectedPublication != null && selectedUser != null) {
+        Client selectedClient = (Client) userComboBox.getSelectionModel().getSelectedItem();
+        if (selectedPublication != null && selectedClient != null) {
             Comment comment = new Comment(
-            commentTitleField.getText(), commentTextArea.getText(), selectedUser, selectedPublication
+            commentTitleField.getText(), commentTextArea.getText(), selectedClient, selectedPublication
             );
             hibernate.create(comment);
             commentTitleField.clear();

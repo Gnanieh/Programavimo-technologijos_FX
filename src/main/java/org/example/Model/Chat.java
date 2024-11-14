@@ -21,13 +21,20 @@ public class Chat
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Transient
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Comment> messages;
-
+    @ManyToOne
+    private Book book;
     private String body;
     private LocalDateTime dateTime;
 
     public Chat(String body, LocalDateTime dateTime) {
+        this.body = body;
+        this.dateTime = dateTime;
+    }
+
+    public Chat(List<Comment> messages, String body, LocalDateTime dateTime) {
+        this.messages = messages;
         this.body = body;
         this.dateTime = dateTime;
     }

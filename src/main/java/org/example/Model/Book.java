@@ -18,7 +18,8 @@ public class Book extends Publication
     private String isbn;
     private int pageCount;
     private String summary;
-
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Chat> chatList;
 
     public Book(String title, String author, String publisher, LocalDate year, String type, String isbn, int pageCount, String summary) {
         super(title, author, publisher, year, type);
@@ -27,7 +28,7 @@ public class Book extends Publication
         this.summary = summary;
     }
 
-    public Book(String title, String author, String publisher, LocalDate year, String type, User client, String isbn, int pageCount, String summary) {
+    public Book(String title, String author, String publisher, LocalDate year, String type, Client client, String isbn, int pageCount, String summary) {
         super(title, author, publisher, year, type, client);
         this.isbn = isbn;
         this.pageCount = pageCount;

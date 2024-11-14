@@ -28,9 +28,9 @@ public abstract class Publication implements Serializable
     private LocalDate year;
     private String type;
     @ManyToOne
-    private User client;
-    @OneToMany
-    private List<Comment> comments;
+    private Client owner;
+    @ManyToOne
+    protected Client client;
 
     public Publication(int id, String title, String author) {
         this.id = id;
@@ -46,14 +46,15 @@ public abstract class Publication implements Serializable
         this.type = type;
     }
 
-    public Publication(String title, String author, String publisher, LocalDate year, String type, User client) {
+    public Publication(String title, String author, String publisher, LocalDate year, String type, Client client) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.year = year;
         this.type = type;
-        this.client = client;
+        this.owner = client;
     }
+
 
 
 }

@@ -68,7 +68,7 @@ public class ProductWindow implements Initializable {
 
     public void createNewPublication() {
         User selectedClient = userListField.getSelectionModel().getSelectedItem();
-        User clientFromDB = hibernate.getEntityById(User.class, selectedClient.getId());
+        Client clientFromDB = hibernate.getEntityById(Client.class, selectedClient.getId());
 
         if (mangaCheck.isSelected()) {
             Manga manga = new Manga(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Manga", clientFromDB, illustratorField.getText(), originalLanguageField.getText(), Integer.parseInt(volumeNumberField.getText()), isColloredButton.isSelected());
@@ -91,9 +91,9 @@ public class ProductWindow implements Initializable {
         CustomHibernate cusHib = new CustomHibernate(entityManagerFactory);
 
         publicationListField.getItems().clear();
-        List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
-        //List <Publication> publicationList = new ArrayList<>();
-        //publicationList.add(cusHib.getPublicationByUserId(userFromDB.getId()));
+        //List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
+        List <Publication> publicationList = new ArrayList<>();
+        publicationList.add(cusHib.getPublicationByUserId(userFromDB.getId()));
         publicationListField.getItems().addAll(publicationList);
 
 

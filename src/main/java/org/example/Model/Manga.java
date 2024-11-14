@@ -23,7 +23,7 @@ public class Manga  extends Publication
     private int volumeNumber;
     private boolean isColor;
 
-    public Manga(String title, String author, String publisher, LocalDate year, String type, User client, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
+    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
         super(title, author, publisher, year, type, client);
         this.illustrator = illustrator;
         this.originalLanguage = originalLanguage;
@@ -31,7 +31,7 @@ public class Manga  extends Publication
         this.isColor = isColor;
     }
 
-    public Manga(String title, String author, String publisher, LocalDate year, String type, User client) {
+    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client) {
         super(title, author, publisher, year, type, client);
     }
 

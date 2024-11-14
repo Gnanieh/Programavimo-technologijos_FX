@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class Journal  extends Publication
 {
 
-    public Journal(String title, String author, String publisher, LocalDate year, String type, User client) {
+    public Journal(String title, String author, String publisher, LocalDate year, String type, Client client) {
         super(title, author, publisher, year, type, client);
     }
 
