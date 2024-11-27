@@ -2,10 +2,10 @@ package org.example.fxControllers;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
@@ -17,6 +17,7 @@ import org.example.hibernateControllers.GenericHibernate;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -44,7 +45,7 @@ public class Main implements Initializable {
     @FXML
     public RadioButton clientCheck;
     @FXML
-    public ComboBox<User> userComboBox;
+    public ComboBox<Client> clientComboBox;
     @FXML
     public TextArea commentTextArea;
     @FXML
@@ -53,11 +54,37 @@ public class Main implements Initializable {
     public ComboBox<Publication> productComboBox;
     @FXML
     public TextField commentTitleField;
+    //*-------------------------------------------------------------*
+    //Book exchange TAB
+    @FXML
+    public ListView<Publication> availablePublicationList;
+    @FXML
+    public TextArea publicationBio;
+    @FXML
+    public ListView<Comment> messageList;
+    @FXML
+    public TextArea ownerBio;
+    @FXML
+    public TextArea messageText;
+    @FXML
+    public Button leaveReviewButton;
+    @FXML
+    public Button reserveButton;
+    @FXML
+    public Button addMessageButton;
+    @FXML
+    public TabPane allTabs;
 
 
     EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bookExchange");
     GenericHibernate hibernate = new GenericHibernate(entityManagerFactory);
     CustomHibernate cusHib = new CustomHibernate(entityManagerFactory);
+    private User currentUser;
+    public void setData(EntityManagerFactory entityManagerFactory, User user) {
+        this.currentUser = user;
+        fillUserList();
+    }
+
 
     public void createNewUser() {
         if (clientCheck.isSelected()) {
@@ -106,8 +133,50 @@ public class Main implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillUserList();
         disableFields();
-        fillComboBoxData();
-        fillCommentData();
+        //fillComboBoxData();
+       // fillCommentData();
+
+    }
+
+    public void loadPublicationInfo() {
+       // availablePublicationList.getItems().clear();
+       // availablePublicationList.getItems().addAll(cusHib.getPublicationByUserId((Client)currentUser));
+        Publication publication = availablePublicationList.getSelectionModel().getSelectedItem();
+        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
+
+        publicationBio.setText(
+                "Title :" + publicationFromDb.getTitle() + "\n" +
+                        "Year:" + publicationFromDb.getYear());
+
+        ownerBio.setText(publicationFromDb.getOwner().getName());
+    }
+    public void loadReviewWindow() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("userReview.fxml"));
+        Parent parent = fxmlLoader.load();
+        UserReview userReview = fxmlLoader.getController();
+        userReview.setData(entityManagerFactory, currentUser, availablePublicationList.getSelectionModel().getSelectedItem().getOwner());
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setTitle("Book Exchange Test");
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+    }
+
+    public void chatWithOwner() {
+    }
+
+    public void reserveBook() {
+
+        Publication publication = availablePublicationList.getSelectionModel().getSelectedItem();
+        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
+        //publicationFromDb.setPublicationStatus(PublicationStatus.REQUESTED);
+        publicationFromDb.setClient((Client) currentUser);
+        hibernate.update(publicationFromDb);
+
+        //PeriodicRecord periodicRecord = new PeriodicRecord((Client) currentUser, publicationFromDb, LocalDate.now(), PublicationStatus.REQUESTED);
+        //hibernate.create(periodicRecord);
+
     }
 
     public void loadUserData()
@@ -178,65 +247,25 @@ public class Main implements Initializable {
     }
 
 
-    public void fillCommentData() {
-        commentField.getItems().clear();
-        commentField.getItems().addAll(hibernate.getAllRecords(Comment.class));
-    }
 
-    public void fillComboBoxData()
-    {
-        userComboBox.getItems().clear();
-        userComboBox.getItems().addAll(hibernate.getAllRecords(User.class));
-        productComboBox.getItems().clear();
-    }
-
-
-    public void createComment() {
-        Publication selectedPublication = productComboBox.getSelectionModel().getSelectedItem();
-        Client selectedClient = (Client) userComboBox.getSelectionModel().getSelectedItem();
-        if (selectedPublication != null && selectedClient != null) {
-            Comment comment = new Comment(
-            commentTitleField.getText(), commentTextArea.getText(), selectedClient, selectedPublication
-            );
-            hibernate.create(comment);
-            commentTitleField.clear();
-            commentTextArea.clear();
-            fillCommentData();
-        }
-    }
-
-    public void loadCommentData()
-    {
-        Comment selectedComment = commentField.getSelectionModel().getSelectedItem();
-        Comment commentInfoFromDB = hibernate.getEntityById(Comment.class, selectedComment.getId());
-
-        commentTitleField.setText(commentInfoFromDB.getTitle());
-        commentTextArea.setText(commentInfoFromDB.getBody());
-    }
-
-    public void updateComment() {
-        Comment selectedComment = commentField.getSelectionModel().getSelectedItem();
-        Comment commentInfoFromDB = hibernate.getEntityById(Comment.class, selectedComment.getId());
-
-        commentInfoFromDB.setTitle(commentTitleField.getText());
-        commentInfoFromDB.setBody(commentTextArea.getText());
-
-
-        hibernate.update(commentInfoFromDB);
-        fillCommentData();
-    }
-
-
-    public void deleteComment() {
-        Comment selectedComment = commentField.getSelectionModel().getSelectedItem();
-        hibernate.delete(Comment.class, selectedComment.getId());
-        fillCommentData();
-    }
-
-
-    public void fillProductComboBoxOnSelection() {
-        User selectedClient = userComboBox.getSelectionModel().getSelectedItem();
-        productComboBox.getItems().addAll(cusHib.getPublicationByUserId(selectedClient.getId()));
-        System.out.println("ON");
-    }
+//    public void createComment() {
+//        Publication selectedPublication = productComboBox.getSelectionModel().getSelectedItem();
+//        Client selectedClient = clientComboBox.getSelectionModel().getSelectedItem();
+//        if (selectedPublication != null && selectedClient != null) {
+//            //Comment comment = new Comment(
+//           // commentTitleField.getText(), commentTextArea.getText(), selectedClient, selectedPublication
+//           // );
+//            Comment selectedComment = clientComboBox.getSelectionModel().getSelectedItem() != null ? clientComboBox.getSelectionModel().getSelectedItem().getValue() : null;
+//            Comment comment;
+//            if (selectedComment != null) {
+//                comment = new Comment(commentTitleField.getText(), commentTextArea.getText(), selectedComment, client);
+//            } else {
+//                comment = new Comment(commentTitleField.getText(), commentTextArea.getText(), targetClient, client);
+//            }
+//            hibernate.create(comment);
+//            commentTitleField.clear();
+//            commentTextArea.clear();
+//            fillCommentData();
+//        }
 }
+

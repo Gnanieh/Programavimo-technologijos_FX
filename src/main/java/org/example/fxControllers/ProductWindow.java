@@ -20,7 +20,7 @@ public class ProductWindow implements Initializable {
     @FXML
     public ListView<Publication> publicationListField;
     @FXML
-    public ListView<User> userListField;
+    public ListView<Client> clientListField;
     @FXML
     public TextField titleField;
     @FXML
@@ -55,9 +55,9 @@ public class ProductWindow implements Initializable {
     GenericHibernate hibernate = new GenericHibernate(entityManagerFactory);
 
     public void fillUserList() {
-        userListField.getItems().clear();
-        List<User> userList = hibernate.getAllRecords(User.class);
-        userListField.getItems().addAll(userList);
+        clientListField.getItems().clear();
+        List<Client> clientList = hibernate.getAllRecords(Client.class);
+        clientListField.getItems().addAll(clientList);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ProductWindow implements Initializable {
     }
 
     public void createNewPublication() {
-        User selectedClient = userListField.getSelectionModel().getSelectedItem();
+        Client selectedClient = clientListField.getSelectionModel().getSelectedItem();
         Client clientFromDB = hibernate.getEntityById(Client.class, selectedClient.getId());
 
         if (mangaCheck.isSelected()) {
@@ -86,14 +86,14 @@ public class ProductWindow implements Initializable {
     }
 
     public void fillPublicationList() {
-        User selectedUser = userListField.getSelectionModel().getSelectedItem();
-        User userFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
+        Client selectedUser = clientListField.getSelectionModel().getSelectedItem();
+        Client userFromDB = hibernate.getEntityById(Client.class, selectedUser.getId());
         CustomHibernate cusHib = new CustomHibernate(entityManagerFactory);
 
         publicationListField.getItems().clear();
         //List<Publication> publicationList = hibernate.getAllRecords(Publication.class);
         List <Publication> publicationList = new ArrayList<>();
-        publicationList.add(cusHib.getPublicationByUserId(userFromDB.getId()));
+        publicationList.addAll(cusHib.getPublicationByUserId(userFromDB));
         publicationListField.getItems().addAll(publicationList);
 
 
@@ -148,8 +148,11 @@ public class ProductWindow implements Initializable {
 
     public void deletePublication() {
         Publication selectedPublication = publicationListField.getSelectionModel().getSelectedItem();
+
         hibernate.delete(Publication.class, selectedPublication.getId());
         fillPublicationList();
+        //System.out.println(selectedPublication.getTitle());
+        //neveikia!!!!
     }
 
     public void disableFields()

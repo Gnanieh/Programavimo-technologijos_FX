@@ -71,6 +71,6 @@ public class Comment
 
     @Override
     public String toString() {
-        return title + " " + body + " " + timestamp;
+        return commentOwner.name + " " + title + " " + body + " " + timestamp;
     }
 }

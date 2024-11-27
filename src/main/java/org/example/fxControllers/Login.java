@@ -33,7 +33,7 @@ public class Login {
                     Scene scene = new Scene(fxmlLoader.load());
                     stage.setTitle("Book Exchange Test");
                     stage.setScene(scene);
-                    stage.showAndWait();
+                    stage.show();
 
         }
     }
@@ -44,7 +44,7 @@ public class Login {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Book Exchange Test");
         stage.setScene(scene);
-        stage.showAndWait();
+        stage.show();
     }
 
 }

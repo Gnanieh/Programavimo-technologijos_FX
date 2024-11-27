@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.Model.Enum.PublicationStatus;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -31,6 +32,8 @@ public abstract class Publication implements Serializable
     private Client owner;
     @ManyToOne
     protected Client client;
+    @Enumerated
+    protected PublicationStatus publicationStatus;
 
     public Publication(int id, String title, String author) {
         this.id = id;
