@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.example.Model.*;
+import org.example.Model.Enum.PublicationStatus;
 import org.example.hibernateControllers.CustomHibernate;
 import org.example.hibernateControllers.GenericHibernate;
 
@@ -71,15 +72,15 @@ public class ProductWindow implements Initializable {
         Client clientFromDB = hibernate.getEntityById(Client.class, selectedClient.getId());
 
         if (mangaCheck.isSelected()) {
-            Manga manga = new Manga(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Manga", clientFromDB, illustratorField.getText(), originalLanguageField.getText(), Integer.parseInt(volumeNumberField.getText()), isColloredButton.isSelected());
+            Manga manga = new Manga(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Manga", clientFromDB, illustratorField.getText(), originalLanguageField.getText(), Integer.parseInt(volumeNumberField.getText()), isColloredButton.isSelected(), PublicationStatus.AVAILABLE);
             hibernate.create(manga);
         }
         else if (journalCheck.isSelected()) {
-            Journal journal = new Journal(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Journal", clientFromDB);
+            Journal journal = new Journal(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Journal", clientFromDB, PublicationStatus.AVAILABLE);
             hibernate.create(journal);
         }
         else if (bookCheck.isSelected()) {
-            Book book = new Book(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Book", clientFromDB, isbnField.getText(), Integer.parseInt(pageCountField.getText()), summaryField.getText());
+            Book book = new Book(titleField.getText(), authorField.getText(), publicherField.getText(), yearDatePick.getValue(), "Book", clientFromDB, isbnField.getText(), Integer.parseInt(pageCountField.getText()), summaryField.getText(), PublicationStatus.AVAILABLE);
             hibernate.create(book);
         }
         fillPublicationList();

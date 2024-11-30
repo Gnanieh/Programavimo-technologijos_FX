@@ -28,6 +28,8 @@ public class Client extends User implements Comparable<Client>
     private List<Publication> borrowedPublications;
     @OneToMany(mappedBy = "commentOwner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Comment> myComments;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PeriodicRecord> periodicRecords;
 
     public Client(int id, String login, String password, String name, String surname, LocalDate dateCreated, String email, String address, LocalDate birthDate) {
         super(id, login, password, name, surname, dateCreated);

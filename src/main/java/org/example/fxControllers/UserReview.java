@@ -57,4 +57,37 @@ public class UserReview {
         parentComment.getChildren().add(treeItem);
         comment.getReplies().forEach(sub -> addTreeItem(sub, treeItem));
     }
+
+    public void insertComment() {
+
+        if (currentUser instanceof Client client) {
+            Comment selectedComment = userReview.getSelectionModel().getSelectedItem() != null ? userReview.getSelectionModel().getSelectedItem().getValue() : null;
+            Comment comment;
+            if (selectedComment != null) {
+                comment = new Comment(commentTitle.getText(), commentBody.getText(), selectedComment, client);
+            } else {
+                comment = new Comment(commentTitle.getText(), commentBody.getText(), targetClient, client);
+            }
+            genericHibernate.create(comment);
+            fillTree();
+        }
+    }
+
+    public void loadComment() {
+        Comment selectedComment = userReview.getSelectionModel().getSelectedItem().getValue();
+        commentTitle.setText(selectedComment.getTitle());
+        commentBody.setText(selectedComment.getBody());
+    }
+
+    public void updateComment() {
+        Comment selectedComment = userReview.getSelectionModel().getSelectedItem().getValue();
+        selectedComment.setTitle(commentTitle.getText());
+        selectedComment.setBody(commentBody.getText());
+        genericHibernate.update(selectedComment);
+        fillTree();
+    }
+
+    public void deleteComment() {
+        customHibernate.deleteComment(userReview.getSelectionModel().getSelectedItem().getValue().getId());
+    }
 }

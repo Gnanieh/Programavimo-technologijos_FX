@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.Model.Enum.PublicationStatus;
 
 import java.time.LocalDate;
 
@@ -19,17 +20,17 @@ import java.time.LocalDate;
 public class Journal  extends Publication
 {
 
-    public Journal(String title, String author, String publisher, LocalDate year, String type, Client client) {
-        super(title, author, publisher, year, type, client);
+    public Journal(String title, String author, String publisher, LocalDate year, String type, Client client, PublicationStatus publicationStatus) {
+        super(title, author, publisher, year, type, client, publicationStatus);
     }
 
 
-    public Journal(String title, String author, String publisher, LocalDate year, String type) {
-        super(title, author, publisher, year, type);
-    }
+//    public Journal(String title, String author, String publisher, LocalDate year, String type) {
+//        super(title, author, publisher, year, type);
+//    }
 
     @Override
     public String toString() {
-        return "Journal" + getTitle() + " " + getAuthor() + " " + getPublisher();
+        return "Journal " + getTitle() + " " + getAuthor() + " " + getPublisher();
     }
 }

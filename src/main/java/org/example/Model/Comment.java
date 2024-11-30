@@ -22,7 +22,7 @@ public class Comment
     private int id;
     private String title;
     private String body;
-    private LocalDate timestamp;
+    private LocalDateTime timestamp;
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> replies;
     @ManyToOne
@@ -36,37 +36,29 @@ public class Comment
     @ManyToOne
     private Client commentOwner;
 
-
-    public Comment(String title, String body, Client client) {
-        this.title = title;
-        this.body = body;
-        this.timestamp = LocalDate.now();
-        this.client = client;
-    }
-
-    public Comment(String title, String body, Client client, Publication publication) {
+    public Comment(String title, String body, Client client, Client commentOwner) {
         this.title = title;
         this.body = body;
         this.client = client;
-        this.timestamp = LocalDate.now();
-        this.publication = publication;
+        this.commentOwner = commentOwner;
+        this.timestamp = LocalDateTime.now();
     }
 
-    public Comment(String title, String body, LocalDate timestamp, List<Comment> replies, Comment parentComment, Client client) {
+    public Comment(String title, String body, Comment parentComment, Client commentOwner) {
+        this.title = title;
+        this.body = body;
+        this.parentComment = parentComment;
+        this.commentOwner = commentOwner;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Comment(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client) {
         this.title = title;
         this.body = body;
         this.timestamp = timestamp;
         this.replies = replies;
         this.parentComment = parentComment;
         this.client = client;
-    }
-
-    public Comment(String title, String body, Client commentOwner, Comment parentComment, LocalDate timestamp) {
-        this.title = title;
-        this.body = body;
-        this.commentOwner = commentOwner;
-        this.parentComment = parentComment;
-        this.timestamp = timestamp;
     }
 
     @Override

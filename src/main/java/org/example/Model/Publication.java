@@ -33,7 +33,10 @@ public abstract class Publication implements Serializable
     @ManyToOne
     protected Client client;
     @Enumerated
-    protected PublicationStatus publicationStatus;
+    private PublicationStatus publicationStatus;
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL)
+    protected List<PeriodicRecord> records;
+    protected LocalDate requestDate;
 
     public Publication(int id, String title, String author) {
         this.id = id;
@@ -49,13 +52,14 @@ public abstract class Publication implements Serializable
         this.type = type;
     }
 
-    public Publication(String title, String author, String publisher, LocalDate year, String type, Client client) {
+    public Publication(String title, String author, String publisher, LocalDate year, String type, Client client, PublicationStatus publicationStatus) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.year = year;
         this.type = type;
         this.owner = client;
+        this.publicationStatus = publicationStatus;
     }
 
 

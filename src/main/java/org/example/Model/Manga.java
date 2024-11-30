@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.Model.Enum.PublicationStatus;
 
 import java.time.LocalDate;
 
@@ -23,30 +24,30 @@ public class Manga  extends Publication
     private int volumeNumber;
     private boolean isColor;
 
-    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
-        super(title, author, publisher, year, type, client);
+    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client, String illustrator, String originalLanguage, int volumeNumber, boolean isColor, PublicationStatus publicationStatus) {
+        super(title, author, publisher, year, type, client, publicationStatus);
         this.illustrator = illustrator;
         this.originalLanguage = originalLanguage;
         this.volumeNumber = volumeNumber;
         this.isColor = isColor;
     }
 
-    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client) {
-        super(title, author, publisher, year, type, client);
-    }
-
-
-    public Manga(String title, String author, String publisher, LocalDate year, String type) {
-        super(title, author, publisher, year, type);
-    }
-
-    public Manga(String title, String author, String publisher, LocalDate year, String type, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
-        super(title, author, publisher, year, type);
-        this.illustrator = illustrator;
-        this.originalLanguage = originalLanguage;
-        this.volumeNumber = volumeNumber;
-        this.isColor = isColor;
-    }
+//    public Manga(String title, String author, String publisher, LocalDate year, String type, Client client, PublicationStatus publicationStatus) {
+//        super(title, author, publisher, year, type, client, publicationStatus);
+//    }
+//
+//
+//    public Manga(String title, String author, String publisher, LocalDate year, String type) {
+//        super(title, author, publisher, year, type);
+//    }
+//
+//    public Manga(String title, String author, String publisher, LocalDate year, String type, String illustrator, String originalLanguage, int volumeNumber, boolean isColor) {
+//        super(title, author, publisher, year, type);
+//        this.illustrator = illustrator;
+//        this.originalLanguage = originalLanguage;
+//        this.volumeNumber = volumeNumber;
+//        this.isColor = isColor;
+//    }
 
     @Override
     public String toString() {

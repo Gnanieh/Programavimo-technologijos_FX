@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -28,12 +29,17 @@ public class Login {
     public void validateAndConnect() throws IOException {
         User user = userHib.getEntityByLogin(loginTextField.getText(), passwordTextField.getText());
         if (user != null) {
-                    Stage stage = new Stage();
-                    FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("Main.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load());
-                    stage.setTitle("Book Exchange Test");
-                    stage.setScene(scene);
-                    stage.show();
+            FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("Main.fxml"));
+            Parent parent = fxmlLoader.load();
+
+            Main main = fxmlLoader.getController();
+            main.setData(entityManagerFactory, user);
+
+            Scene scene = new Scene(parent);
+            var stage = (Stage) loginTextField.getScene().getWindow();
+            stage.setTitle("Book Exchange Test");
+            stage.setScene(scene);
+            stage.show();
 
         }
     }
