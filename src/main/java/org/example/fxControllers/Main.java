@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -76,7 +77,31 @@ public class Main implements Initializable {
     @FXML
     public Tab chatTab;
     //*---------------------------------------------------------*
-    //Inventory TAB
+    //*USER MANAGER
+    @FXML
+    public Tab userManagerTab;
+    @FXML
+    public TableView<UserTableParam> userTable;
+    @FXML
+    public TableColumn<UserTableParam, Integer> colId;
+    @FXML
+    public TableColumn<UserTableParam, String> colLogin;
+    @FXML
+    public TableColumn<UserTableParam, String> colPass;
+    @FXML
+    public TableColumn<UserTableParam, String> colName;
+    @FXML
+    public TableColumn<UserTableParam, String> colSurname;
+    @FXML
+    public TableColumn<UserTableParam, String> colAddress;
+    @FXML
+    public TableColumn<UserTableParam, String> colPhone;
+    @FXML
+    public TableColumn<UserTableParam, String> colMail;
+    @FXML
+    public TableColumn dummyCol;
+    //*---------------------------------------------------------*
+    //INVENTORY TAB
     @FXML
     public Tab inventoryTab;
     @FXML
@@ -112,26 +137,11 @@ public class Main implements Initializable {
         if (currentUser instanceof Client) {
             //allTabs.getTabs().remove(publicationManagementTab);
             allTabs.getTabs().remove(userTab);
+            allTabs.getTabs().remove(userManagerTab);
         } else {
             //allTabs.getTabs().remove(clientBookManagementTab);
             leaveReviewButton.setDisable(false);
         }
-    }
-
-    public void createNewUser() {
-        if (clientCheck.isSelected()) {
-            Client client = new Client(loginField.getText(), pswField.getText(), nameField.getText(), surnameField.getText(), addressField.getText(), bDay.getValue(), emailField.getText());
-            if(client != null) {
-                hibernate.create(client);
-            }
-        }
-        else{
-            Admin admin = new Admin(loginField.getText(), pswField.getText(), nameField.getText(), surnameField.getText(), phoneNumField.getText());
-            if (admin != null) {
-                hibernate.create(admin);
-                }
-        }
-        fillUserList();
     }
 
     public void disableFields() {
@@ -152,23 +162,89 @@ public class Main implements Initializable {
         }
     }
 
-    public void fillUserList() {
-        userListField.getItems().clear();
-        nameField.clear();
-        surnameField.clear();
-        addressField.clear();
-        loginField.clear();
-        pswField.clear();
-        phoneNumField.clear();
-        emailField.clear();
-        List<User> userList = hibernate.getAllRecords(User.class);
-        userListField.getItems().addAll(userList);
+    public void loadData()
+    {
+        if (userTab.isSelected()) {
+            fillUserList();
+        } else if (bookExchangeTab.isSelected()) {
+            availablePublicationList.getItems().clear();
+            availablePublicationList.getItems().addAll(cusHib.getAvailablePublications(currentUser));
+        }
+        else if (inventoryTab.isSelected()) {
+            fillPublicationList();
+        }
+        else if (userManagerTab.isSelected()) {
+            //loadUserData();
+            fillUserTable();
+        }
     }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillUserList();
         disableFields();
+        userTable.setEditable(true);
+
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colLogin.setCellValueFactory(new PropertyValueFactory<>("login"));
+        colPass.setCellValueFactory(new PropertyValueFactory<>("password"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+        colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        colMail.setCellValueFactory(new PropertyValueFactory<>("email"));
+
+        colLogin.setCellFactory(TextFieldTableCell.forTableColumn());
+        colLogin.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setLogin(event.getNewValue());
+            User user = hibernate.getEntityById(User.class, event.getTableView().getItems().get(event.getTablePosition().getRow()).getId());
+            user.setLogin(event.getNewValue());
+            hibernate.update(user);
+        });
+
+        colAddress.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setAddress(event.getNewValue());
+            User user = hibernate.getEntityById(User.class, event.getTableView().getItems().get(event.getTablePosition().getRow()).getId());
+            if (user instanceof Client client) {
+                client.setAddress(event.getNewValue());
+                hibernate.update(user);
+            }
+        });
+
+        colPhone.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setPhoneNumber(event.getNewValue());
+            User user = hibernate.getEntityById(User.class, event.getTableView().getItems().get(event.getTablePosition().getRow()).getId());
+            if (user instanceof Admin admin) {
+                admin.setPhoneNumber(event.getNewValue());
+                hibernate.update(admin);
+            }
+        });
+
+        Callback<TableColumn<UserTableParam, Void>, TableCell<UserTableParam, Void>> callback = param -> {
+            final TableCell<UserTableParam, Void> cell = new TableCell<>() {
+                private final Button deleteButton = new Button("Delete");
+                {
+                    deleteButton.setOnAction(event -> {
+                        UserTableParam row = getTableView().getItems().get(getIndex());
+                        hibernate.delete(User.class, row.getId());
+                        fillUserTable();
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(deleteButton);
+                    }
+                }
+            };
+            return cell;
+        };
+        dummyCol.setCellFactory(callback);
+
+        //*PUBLICATION MANAGER/MY INVENTORY/*
         availablePublicationList.setEditable(true);
         colPublicationID.setCellValueFactory(new PropertyValueFactory<>("id"));
         colPublicationTitle.setCellValueFactory(new PropertyValueFactory<>("publicationTitle"));
@@ -211,7 +287,6 @@ public class Main implements Initializable {
 
         colPublicationStatus.setCellFactory(callbackBookStatus);
 
-        //Cia dabar bus knopke
         Callback<TableColumn<PublicationTableParam, Void>, TableCell<PublicationTableParam, Void>> historyButton = param -> new TableCell<>() {
             private final Button viewHistoryBtn = new Button("View history");
 
@@ -241,76 +316,36 @@ public class Main implements Initializable {
         loadData();
     }
 
-    public void loadData()
-    {
-        if (userTab.isSelected()) {
-            fillUserList();
-        } else if (bookExchangeTab.isSelected()) {
-            availablePublicationList.getItems().clear();
-            availablePublicationList.getItems().addAll(cusHib.getAvailablePublications(currentUser));
+//*-----------------------------------------------------------*
+    //USER TAB
+
+    public void fillUserList() {
+        userListField.getItems().clear();
+        nameField.clear();
+        surnameField.clear();
+        addressField.clear();
+        loginField.clear();
+        pswField.clear();
+        phoneNumField.clear();
+        emailField.clear();
+        List<User> userList = hibernate.getAllRecords(User.class);
+        userListField.getItems().addAll(userList);
+    }
+
+    public void createNewUser() {
+        if (clientCheck.isSelected()) {
+            Client client = new Client(loginField.getText(), pswField.getText(), nameField.getText(), surnameField.getText(), addressField.getText(), bDay.getValue(), emailField.getText());
+            if(client != null) {
+                hibernate.create(client);
+            }
         }
-        else if (inventoryTab.isSelected()) {
-        fillPublicationList();
+        else{
+            Admin admin = new Admin(loginField.getText(), pswField.getText(), nameField.getText(), surnameField.getText(), phoneNumField.getText());
+            if (admin != null) {
+                hibernate.create(admin);
+            }
         }
-    }
-
-    public void loadPublicationInfo() {
-        Publication publication = availablePublicationList.getSelectionModel().getSelectedItem();
-        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
-
-        publicationBio.setText(
-                "Title :" + publicationFromDb.getTitle() + "\n" +
-                        "Year:" + publicationFromDb.getYear());
-
-        ownerBio.setText(publicationFromDb.getOwner().getName());
-    }
-    public void loadReviewWindow() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("UserReview.fxml"));
-        Parent parent = fxmlLoader.load();
-        UserReview userReview = fxmlLoader.getController();
-        userReview.setData(entityManagerFactory, currentUser, availablePublicationList.getSelectionModel().getSelectedItem().getOwner());
-        Stage stage = new Stage();
-        Scene scene = new Scene(parent);
-        stage.setTitle("Book Exchange Test");
-        stage.setScene(scene);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
-    }
-
-    public void chatWithOwner() {
-    }
-
-    public void reserveBook() {
-
-        Publication publication = availablePublicationList.getSelectionModel().getSelectedItem();
-        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
-        publicationFromDb.setPublicationStatus(PublicationStatus.REQUESTED);
-        publicationFromDb.setClient((Client) currentUser);
-        hibernate.update(publicationFromDb);
-
-        PeriodicRecord periodicRecord = new PeriodicRecord((Client) currentUser, publicationFromDb, LocalDate.now(), PublicationStatus.REQUESTED);
-        hibernate.create(periodicRecord);
-
-    }
-
-    public void loadUserData()
-    {
-        User selectedUser = userListField.getSelectionModel().getSelectedItem();
-        User userInfoFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
-
-        nameField.setText(userInfoFromDB.getName());
-        surnameField.setText(userInfoFromDB.getSurname());
-
-        if (userInfoFromDB instanceof Client)
-        {
-            Client client = (Client) userInfoFromDB;
-            addressField.setText(client.getAddress());
-            emailField.setText(client.getEmail());
-            bDay.setValue(client.getBirthDate());
-        } else {
-            Admin admin = (Admin) userInfoFromDB;
-            phoneNumField.setText(admin.getPhoneNumber());
-        }
+        fillUserList();
     }
 
     public void updateUser() {
@@ -339,6 +374,26 @@ public class Main implements Initializable {
         fillUserList();
     }
 
+    public void loadUserData()
+    {
+        User selectedUser = userListField.getSelectionModel().getSelectedItem();
+        User userInfoFromDB = hibernate.getEntityById(User.class, selectedUser.getId());
+
+        nameField.setText(userInfoFromDB.getName());
+        surnameField.setText(userInfoFromDB.getSurname());
+
+        if (userInfoFromDB instanceof Client)
+        {
+            Client client = (Client) userInfoFromDB;
+            addressField.setText(client.getAddress());
+            emailField.setText(client.getEmail());
+            bDay.setValue(client.getBirthDate());
+        } else {
+            Admin admin = (Admin) userInfoFromDB;
+            phoneNumField.setText(admin.getPhoneNumber());
+        }
+    }
+
     public void clearFields()
     {
         loginField.clear();
@@ -358,6 +413,51 @@ public class Main implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
+    }
+//*-----------------------------------------------------------*
+
+//*-----------------------------------------------------------*
+
+    //BOOK EXCHANGE TAB
+
+    public void loadPublicationInfo() {
+        Publication publication = availablePublicationList.getSelectionModel().getSelectedItem();
+        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
+
+        publicationBio.setText(
+                "Title :" + publicationFromDb.getTitle() + "\n" +
+                        "Year:" + publicationFromDb.getYear());
+
+        ownerBio.setText(publicationFromDb.getOwner().getName());
+    }
+
+    public void loadReviewWindow() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("UserReview.fxml"));
+        Parent parent = fxmlLoader.load();
+        UserReview userReview = fxmlLoader.getController();
+        userReview.setData(entityManagerFactory, currentUser, availablePublicationList.getSelectionModel().getSelectedItem().getOwner());
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setTitle("Book Exchange Test");
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+    }
+
+    public void chatWithOwner() {
+    }
+
+    public void reserveBook() {
+
+        Publication publication = availablePublicationList.getSelectionModel().getSelectedItem();
+        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
+        publicationFromDb.setPublicationStatus(PublicationStatus.REQUESTED);
+        publicationFromDb.setClient((Client) currentUser);
+        hibernate.update(publicationFromDb);
+
+        PeriodicRecord periodicRecord = new PeriodicRecord((Client) currentUser, publicationFromDb, LocalDate.now(), PublicationStatus.REQUESTED);
+        hibernate.create(periodicRecord);
+
     }
 
     private void fillPublicationList() {
@@ -392,6 +492,36 @@ public class Main implements Initializable {
         stage.setScene(scene);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
+    }
+
+//*-----------------------------------------------------------*
+
+
+//*-----------------------------------------------------------*
+    //USER MANAGER TAB
+
+    public void fillUserTable() {
+        userTable.getItems().clear();
+        List<User> users = hibernate.getAllRecords(User.class);
+        for (User u : users) {
+            UserTableParam userTableParameters = new UserTableParam();
+            userTableParameters.setId(u.getId());
+            userTableParameters.setLogin(u.getLogin());
+            userTableParameters.setPassword(u.getPassword());
+            userTableParameters.setName(u.getName());
+            userTableParameters.setSurname(u.getSurname());
+            if(u instanceof Client) {
+                userTableParameters.setAddress(((Client) u).getAddress());
+                userTableParameters.setEmail(((Client) u).getEmail());
+            }
+            else
+            {
+                userTableParameters.setAddress(null);
+                userTableParameters.setEmail(null);
+                userTableParameters.setPhoneNumber(((Admin) u).getPhoneNumber());
+            }
+            userTable.getItems().add(userTableParameters);
+        }
     }
 
 
