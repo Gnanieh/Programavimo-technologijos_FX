@@ -124,7 +124,7 @@ public class CustomHibernate{
             Publication publication = entityManager.find(Publication.class, id);
 
             query.select(root).where(cb.equal(root.get("publication"), publication));
-            query.orderBy(cb.desc(root.get("transactionDate")));
+            //query.orderBy(cb.desc(root.get("transactionDate")));
 
             Query q = entityManager.createQuery(query);
             periodicRecords = q.getResultList();
@@ -135,7 +135,7 @@ public class CustomHibernate{
         return periodicRecords;
     }
 
-  /*  public List<Publication> getOwnBorrowedPublications(User user) {
+   public List<Publication> getOwnBorrowedPublications(User user) {
         List<Publication> publications = new ArrayList<>();
         try {
             entityManager = entityManagerFactory.createEntityManager();
@@ -143,7 +143,13 @@ public class CustomHibernate{
             CriteriaQuery<Publication> query = cb.createQuery(Publication.class);
             Root<Publication> root = query.from(Publication.class);
 
+            query.select(root).where(cb.and(cb.equal(root.get("publicationStatus"), PublicationStatus.REQUESTED), cb.equal(root.get("client"), user)));
+            Query q = entityManager.createQuery(query);
+            publications = q.getResultList();
 
+        }   catch (Exception e) {
+            e.printStackTrace();
         }
-    }*/
+        return publications;
+    }
 }

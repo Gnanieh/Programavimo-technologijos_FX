@@ -174,6 +174,7 @@ public class Main implements Initializable {
         }
         else if (inventoryTab.isSelected()) {
             fillPublicationList();
+            loadBorrowedPublicationlist();
         }
         else if (userManagerTab.isSelected()) {
             //loadUserData();
@@ -459,7 +460,7 @@ public class Main implements Initializable {
 
         PeriodicRecord periodicRecord = new PeriodicRecord((Client) currentUser, publicationFromDb, LocalDate.now(), PublicationStatus.REQUESTED);
         hibernate.create(periodicRecord);
-
+        loadData();
     }
 
     private void fillPublicationList() {
@@ -499,7 +500,8 @@ public class Main implements Initializable {
     private void loadBorrowedPublicationlist()
     {
         borrowedBooksListView.getItems().clear();
-        List<Publication> publications = cusHib.getOwnPublications(currentUser);
+        List<Publication> publications = cusHib.getOwnBorrowedPublications(currentUser);
+        borrowedBooksListView.getItems().addAll(publications);
     }
 //*-----------------------------------------------------------*
 
