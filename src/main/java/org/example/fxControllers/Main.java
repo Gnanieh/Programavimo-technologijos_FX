@@ -118,6 +118,8 @@ public class Main implements Initializable {
     public TableColumn colPublicationStatus;
     @FXML
     public TableColumn colHistory;
+    @FXML
+    public ListView<Publication> borrowedBooksListView;
 
 
     EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bookExchange");
@@ -494,6 +496,11 @@ public class Main implements Initializable {
         stage.showAndWait();
     }
 
+    private void loadBorrowedPublicationlist()
+    {
+        borrowedBooksListView.getItems().clear();
+        List<Publication> publications = cusHib.getOwnPublications(currentUser);
+    }
 //*-----------------------------------------------------------*
 
 

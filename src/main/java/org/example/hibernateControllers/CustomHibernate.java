@@ -134,4 +134,16 @@ public class CustomHibernate{
         }
         return periodicRecords;
     }
+
+  /*  public List<Publication> getOwnBorrowedPublications(User user) {
+        List<Publication> publications = new ArrayList<>();
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Publication> query = cb.createQuery(Publication.class);
+            Root<Publication> root = query.from(Publication.class);
+
+
+        }
+    }*/
 }
