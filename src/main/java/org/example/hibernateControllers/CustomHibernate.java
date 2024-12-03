@@ -152,4 +152,22 @@ public class CustomHibernate{
         }
         return publications;
     }
+
+    public List<Client> getClients(Client client) {
+        List<Client> clients = new ArrayList<>();
+        try{
+            entityManager = entityManagerFactory.createEntityManager();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Client> query = cb.createQuery(Client.class);
+            Root<Client> root = query.from(Client.class);
+
+            query.select(root).where(cb.notEqual(root.get("id"), client.getId()));
+            Query q = entityManager.createQuery(query);
+            clients = q.getResultList();
+            System.out.println(clients);
+        }   catch (Exception e) {
+            e.printStackTrace();
+        }
+        return clients;
+    }
 }

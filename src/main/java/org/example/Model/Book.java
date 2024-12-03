@@ -19,8 +19,6 @@ public class Book extends Publication
     private String isbn;
     private int pageCount;
     private String summary;
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Chat> chatList;
 
 //    public Book(String title, String author, String publisher, LocalDate year, String type, String isbn, int pageCount, String summary) {
 //        super(title, author, publisher, year, type);

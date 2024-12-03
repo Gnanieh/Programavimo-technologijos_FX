@@ -2,6 +2,7 @@ package org.example.fxControllers;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -120,6 +121,22 @@ public class Main implements Initializable {
     public TableColumn colHistory;
     @FXML
     public ListView<Publication> borrowedBooksListView;
+    //*---------------------------------------------------------*
+    //CHAT TAB
+    @FXML
+    public ComboBox<Client> userSelectionComboBox;
+    @FXML
+    public TreeView<Chat> chatWindow;
+    @FXML
+    public ContextMenu chatContextMenu;
+    @FXML
+    public TextArea chatBodyTextArea;
+    @FXML
+    public Button insertChatButton;
+    @FXML
+    public MenuItem deleteChatItem;
+    @FXML
+    public ListView<Client> userListViewChat;
 
 
     EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bookExchange");
@@ -140,9 +157,11 @@ public class Main implements Initializable {
             //allTabs.getTabs().remove(publicationManagementTab);
             allTabs.getTabs().remove(userTab);
             allTabs.getTabs().remove(userManagerTab);
+            allTabs.getTabs().add(chatTab);
         } else {
             //allTabs.getTabs().remove(clientBookManagementTab);
             leaveReviewButton.setDisable(false);
+            allTabs.getTabs().remove(chatTab);
         }
     }
 
@@ -179,12 +198,15 @@ public class Main implements Initializable {
         else if (userManagerTab.isSelected()) {
             //loadUserData();
             fillUserTable();
+        } else if (chatTab.isSelected()) {
+            loadUserComboBox();
         }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillUserList();
         disableFields();
+        loadUserComboBox();
         userTable.setEditable(true);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -533,6 +555,57 @@ public class Main implements Initializable {
         }
     }
 
+    //*------------------------------------------------------------*
+    //CHAT TAB
 
+    public void insertChat() {
+        if (currentUser instanceof Client client) {
+            Client targetClient = userListViewChat.getSelectionModel().getSelectedItem();
+
+            Chat selectedChat = chatWindow.getSelectionModel().getSelectedItem() != null ? chatWindow.getSelectionModel().getSelectedItem().getValue() : null;
+            Chat chat;
+            if (selectedChat != null) {
+                chat = new Chat("", chatBodyTextArea.getText(), selectedChat, (Client) currentUser);
+            } else {
+
+                chat = new Chat("", chatBodyTextArea.getText(), targetClient, client);
+            }
+            hibernate.create(chat);
+            fillTree();
+        }
+    }
+
+    public void loadUserComboBox()
+    {
+        userListViewChat.getItems().clear();
+        List<Client> clients = cusHib.getClients((Client)currentUser);
+        userListViewChat.getItems().addAll(clients);
+    }
+
+    private void fillTree() {
+        Client targetClient = userListViewChat.getSelectionModel().getSelectedItem();
+        chatWindow.setRoot(new TreeItem<>());
+        chatWindow.setShowRoot(false);
+        chatWindow.getRoot().setExpanded(true);
+        Client clientFromDb = hibernate.getEntityById(Client.class, targetClient.getId());
+        clientFromDb.getChatList().forEach(c -> addTreeItem((Chat) c, chatWindow.getRoot()));
+    }
+
+    public void addTreeItem(Chat chat, TreeItem<Chat> parentComment) {
+        TreeItem<Chat> treeItem = new TreeItem<>(chat);
+        parentComment.getChildren().add(treeItem);
+        chat.getRepliedChats().forEach(sub -> addTreeItem((Chat) sub, treeItem));
+    }
+
+
+    public void loadChat() {
+        Comment selectedChat = chatWindow.getSelectionModel().getSelectedItem().getValue();
+        chatBodyTextArea.setText(selectedChat.getBody());
+    }
+
+
+    public void deleteChat() {
+        cusHib.deleteComment(chatWindow.getSelectionModel().getSelectedItem().getValue().getId());
+    }
 }
 

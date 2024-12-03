@@ -25,6 +25,8 @@ public class Comment
     private LocalDateTime timestamp;
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> replies;
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Comment> repliedChats;
     @ManyToOne
     private Comment parentComment;
     @ManyToOne
@@ -52,14 +54,9 @@ public class Comment
         this.timestamp = LocalDateTime.now();
     }
 
-    public Comment(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client) {
-        this.title = title;
-        this.body = body;
-        this.timestamp = timestamp;
-        this.replies = replies;
-        this.parentComment = parentComment;
-        this.client = client;
-    }
+
+
+
 
     @Override
     public String toString() {

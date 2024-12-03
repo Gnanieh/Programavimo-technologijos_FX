@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -13,6 +14,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="594.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.fxControllers.Main">
@@ -43,11 +45,18 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="bodyTextArea" layoutX="191.0" layoutY="51.0" prefHeight="200.0" prefWidth="200.0" />
-                        <Button layoutX="34.0" layoutY="282.0" mnemonicParsing="false" text="Add" />
-                        <Button layoutX="88.0" layoutY="282.0" mnemonicParsing="false" text="Update" />
-                        <Button layoutX="154.0" layoutY="282.0" mnemonicParsing="false" text="Delete" />
-                        <ComboBox layoutX="425.0" layoutY="51.0" prefWidth="150.0" />
+                        <TreeView fx:id="chatWindow" layoutX="537.0" layoutY="101.0" onMouseClicked="#loadChat" prefHeight="282.0" prefWidth="314.0">
+                           <contextMenu>
+                              <ContextMenu fx:id="chatContextMenu">
+                                <items>
+                                    <MenuItem fx:id="deleteChatItem" mnemonicParsing="false" onAction="#deleteChat" text="Delete" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </TreeView>
+                        <TextArea fx:id="chatBodyTextArea" layoutX="33.0" layoutY="100.0" prefHeight="161.0" prefWidth="357.0" />
+                        <Button fx:id="insertChatButton" layoutX="37.0" layoutY="292.0" mnemonicParsing="false" onAction="#insertChat" text="Insert" />
+                        <ListView fx:id="userListViewChat" layoutX="27.0" layoutY="14.0" prefHeight="55.0" prefWidth="305.0" />
                      </children>
                   </AnchorPane>
               </content>
