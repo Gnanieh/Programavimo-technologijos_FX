@@ -14,13 +14,40 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Chat extends Comment {
+public class Chat{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String body;
+    private LocalDateTime timestamp;
+    @OneToMany(mappedBy = "parentChat", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Chat> repliedChats;
+    @ManyToOne
+    private Chat parentChat;
+    @ManyToOne
+    private Client client;
+    @ManyToOne
+    private Chat chat;
+    @ManyToOne
+    private Client chatOwner;
 
-    public Chat(String title, String body, Client client, Client commentOwner) {
-        super(title, body, client, commentOwner);
+    public Chat(String body, Client client, Client chatOwner) {
+        this.body = body;
+        this.client = client;
+        this.chatOwner = chatOwner;
+        this.timestamp = LocalDateTime.now();
     }
 
-    public Chat(String title, String body, Comment parentComment, Client commentOwner) {
-        super(title, body, parentComment, commentOwner);
+    public Chat(String body, Chat parrentChat, Client chatOwner) {
+        this.body = body;
+        this.parentChat = parrentChat;
+        this.chatOwner = chatOwner;
+        this.timestamp = LocalDateTime.now();
+    }
+
+
+    @Override
+    public String toString() {
+        return chatOwner.name + " " + body + " " + timestamp;
     }
 }

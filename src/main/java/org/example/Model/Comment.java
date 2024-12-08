@@ -25,16 +25,12 @@ public class Comment
     private LocalDateTime timestamp;
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> replies;
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Comment> repliedChats;
     @ManyToOne
     private Comment parentComment;
     @ManyToOne
     private Publication publication;
     @ManyToOne
     private Client client;
-    @ManyToOne
-    private Chat chat;
     @ManyToOne
     private Client commentOwner;
 

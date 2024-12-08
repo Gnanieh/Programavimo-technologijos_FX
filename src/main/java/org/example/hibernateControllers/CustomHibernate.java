@@ -93,6 +93,28 @@ public class CustomHibernate{
         }
     }
 
+    public void deleteChat(int id) {
+        try
+        {
+        entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        var chat = entityManager.find(Chat.class, id);
+
+        if (chat.getParentChat() != null) {
+            Comment parentComment = entityManager.find(Comment.class, chat.getParentChat().getId());
+            parentComment.getReplies().remove(chat);
+            entityManager.merge(parentComment);
+        }
+
+        chat.getRepliedChats().clear();
+        entityManager.getTransaction().commit();
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (entityManager != null) entityManager.close();
+    }
+    }
+
     public List<Publication> getOwnPublications(User user) {
 
         List<Publication> publications = new ArrayList<>();

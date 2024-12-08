@@ -45,7 +45,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TreeView fx:id="chatWindow" layoutX="537.0" layoutY="101.0" onMouseClicked="#loadChat" prefHeight="282.0" prefWidth="314.0">
+                        <TreeView fx:id="chatWindow" layoutX="295.0" layoutY="10.0" onMouseClicked="#loadChat" prefHeight="282.0" prefWidth="387.0">
                            <contextMenu>
                               <ContextMenu fx:id="chatContextMenu">
                                 <items>
@@ -54,9 +54,9 @@
                               </ContextMenu>
                            </contextMenu>
                         </TreeView>
-                        <TextArea fx:id="chatBodyTextArea" layoutX="33.0" layoutY="100.0" prefHeight="161.0" prefWidth="357.0" />
+                        <TextArea fx:id="chatBodyTextArea" layoutX="33.0" layoutY="100.0" prefHeight="161.0" prefWidth="199.0" />
                         <Button fx:id="insertChatButton" layoutX="37.0" layoutY="292.0" mnemonicParsing="false" onAction="#insertChat" text="Insert" />
-                        <ListView fx:id="userListViewChat" layoutX="27.0" layoutY="14.0" prefHeight="55.0" prefWidth="305.0" />
+                        <ListView fx:id="userListViewChat" layoutX="27.0" layoutY="14.0" onMouseClicked="#fillTree" prefHeight="55.0" prefWidth="207.0" />
                      </children>
                   </AnchorPane>
               </content>

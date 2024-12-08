@@ -23,7 +23,7 @@ public class Client extends User implements Comparable<Client>
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Comment> commentList;
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Comment> chatList;
+    private List<Chat> chatList;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Publication> ownedPublications;
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -32,6 +32,8 @@ public class Client extends User implements Comparable<Client>
     private List<Comment> myComments;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PeriodicRecord> periodicRecords;
+    @OneToMany(mappedBy = "chatOwner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Chat> myChats;
 
     public Client(int id, String login, String password, String name, String surname, LocalDate dateCreated, String email, String address, LocalDate birthDate) {
         super(id, login, password, name, surname, dateCreated);

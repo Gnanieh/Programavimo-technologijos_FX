@@ -207,6 +207,7 @@ public class Main implements Initializable {
         fillUserList();
         disableFields();
         loadUserComboBox();
+        //fillTree();
         userTable.setEditable(true);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -565,10 +566,10 @@ public class Main implements Initializable {
             Chat selectedChat = chatWindow.getSelectionModel().getSelectedItem() != null ? chatWindow.getSelectionModel().getSelectedItem().getValue() : null;
             Chat chat;
             if (selectedChat != null) {
-                chat = new Chat("", chatBodyTextArea.getText(), selectedChat, (Client) currentUser);
+                chat = new Chat(chatBodyTextArea.getText(), selectedChat, (Client) currentUser);
             } else {
 
-                chat = new Chat("", chatBodyTextArea.getText(), targetClient, client);
+                chat = new Chat(chatBodyTextArea.getText(), targetClient, client);
             }
             hibernate.create(chat);
             fillTree();
@@ -582,30 +583,32 @@ public class Main implements Initializable {
         userListViewChat.getItems().addAll(clients);
     }
 
-    private void fillTree() {
+    public void fillTree() {
         Client targetClient = userListViewChat.getSelectionModel().getSelectedItem();
         chatWindow.setRoot(new TreeItem<>());
         chatWindow.setShowRoot(false);
         chatWindow.getRoot().setExpanded(true);
         Client clientFromDb = hibernate.getEntityById(Client.class, targetClient.getId());
-        clientFromDb.getChatList().forEach(c -> addTreeItem((Chat) c, chatWindow.getRoot()));
+        clientFromDb.getChatList().forEach(c -> addTreeItem(c, chatWindow.getRoot()));
+        clientFromDb.getMyChats().forEach(c -> addTreeItem(c, chatWindow.getRoot()));
+
     }
 
-    public void addTreeItem(Chat chat, TreeItem<Chat> parentComment) {
+    public void addTreeItem(Chat chat, TreeItem<Chat> parentChat) {
         TreeItem<Chat> treeItem = new TreeItem<>(chat);
-        parentComment.getChildren().add(treeItem);
-        chat.getRepliedChats().forEach(sub -> addTreeItem((Chat) sub, treeItem));
+        parentChat.getChildren().add(treeItem);
+        chat.getRepliedChats().forEach(sub -> addTreeItem(sub, treeItem));
     }
 
 
     public void loadChat() {
-        Comment selectedChat = chatWindow.getSelectionModel().getSelectedItem().getValue();
+        Chat selectedChat = chatWindow.getSelectionModel().getSelectedItem().getValue();
         chatBodyTextArea.setText(selectedChat.getBody());
     }
 
 
     public void deleteChat() {
-        cusHib.deleteComment(chatWindow.getSelectionModel().getSelectedItem().getValue().getId());
+        cusHib.deleteChat(chatWindow.getSelectionModel().getSelectedItem().getValue().getId());
     }
 }
 
